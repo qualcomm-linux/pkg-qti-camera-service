@@ -1,8 +1,27 @@
-qti-camera-service (1.0.5-0qli2~) UNRELEASED; urgency=medium
+qti-camera-service (1.0.6-0qli1~) UNRELEASED; urgency=medium
 
+  [ Debusine Action Bot ]
   * Unreleased changes
 
- -- Debusine Action Bot <noreply@bot.invalid>  Thu, 20 Aug 2026 12:59:48 +0000
+  [ GitHub Service Bot ]
+  * New upstream release
+
+  [Bala Sai Kosuri]
+  * Fix Android tag compilation issue
+  * Update udev rules to accommodate the new service name
+  * Enable offline JPEG encode support and fix Kodiak build issues
+  * Add support for Shikra Soc
+  * Update default color space and HDR mode values
+  * Restrict camera service launch action to camera driver events
+  * Enable downstream Pebble target and associated library names
+  * Enable Binder support for Pebble target
+  * Add support for device status change event propagation
+  * Add locking to protect capture buffer map access
+  * Fix race condition in client_cameraid_map handling
+  * Skip frame sequence checks in ProviderExtension mode
+  * Release buffers after snapshot stream cancellation
+
+ -- GitHub Service Bot <githubservice@qti.qualcomm.com>  Fri, 11 Sep 2026 06:07:12 +0000
 
 qti-camera-service (1.0.5-0qli1) forky; urgency=medium
 

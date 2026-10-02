@@ -2,3 +2,4 @@ etc/*
 usr/bin/*
 usr/libexec/qmmf-server/*
 usr/lib/systemd/*
+usr/lib/*/udev/rules.d/99-camera.rules usr/lib/udev/rules.d/
