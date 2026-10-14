@@ -1,12 +1,13 @@
-qti-camera-service (1.0.6-0qli1~) UNRELEASED; urgency=medium
+qti-camera-service (1.0.6-0qli1) unstable; urgency=medium
 
   [ GitHub Service Bot ]
   * New upstream release
 
   [ Agathe Porte ]
   * d/control: now depends on libcamx-dev >= 1.1.1
+  * fake release to unstable, as libcamx-dev >= 1.1.1 not available in forky
 
- -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 14 Oct 2026 16:31:06 +0200
+ -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 14 Oct 2026 16:31:24 +0200
 
 qti-camera-service (1.0.5-0qli1) forky; urgency=medium
 
