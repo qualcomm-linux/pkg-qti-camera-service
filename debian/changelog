@@ -1,8 +1,9 @@
-qti-camera-service (1.0.6-0qli1~bpo13+1~) UNRELEASED; urgency=medium
+qti-camera-service (1.0.6-0qli1~bpo13+1) trixie; urgency=medium
 
+  [ Agathe Porte ]
   * Rebuild for trixie.
 
- -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 14 Oct 2026 16:35:30 +0200
+ -- Debusine Action Bot <noreply@bot.invalid>  Wed, 14 Oct 2026 14:39:22 +0000
 
 qti-camera-service (1.0.6-0qli1) unstable; urgency=medium
 
