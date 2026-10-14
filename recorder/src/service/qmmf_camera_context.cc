@@ -47,9 +47,7 @@
 #include <QCamera3VendorTags.h>
 #endif
 
-#ifndef HAVE_BINDER
 #include "common/config/qmmf_config.h"
-#endif // HAVE_BINDER
 #include "recorder/src/service/qmmf_camera_context.h"
 #include "recorder/src/service/qmmf_recorder_utils.h"
 
@@ -88,7 +86,7 @@ float CameraContext::kHFRBatchModeThreshold = 90.0f;
 float CameraContext::kHFRBatchModeThreshold = 120.0f;
 #endif
 
-CameraContext::CameraContext()
+CameraContext::CameraContext(const DeviceStatusCb &devstatuscb)
     : camera_id_(-1),
       streaming_request_id_(-1),
       capture_request_id_(-1),
@@ -97,6 +95,7 @@ CameraContext::CameraContext()
       result_cb_(nullptr),
       error_cb_(nullptr),
       system_cb_(nullptr),
+      device_status_cb_(devstatuscb),
       zsl_port_id_(0x100),
       hfr_supported_(false),
       batch_stream_id_(-1),
@@ -132,6 +131,8 @@ CameraContext::CameraContext()
       { CameraResultCb(result); };
 
   camera_callbacks_.systemCb = [&] (uint32_t errcode) { CameraSystemCb(errcode); };
+  camera_callbacks_.deviceStatusCb = [&] (int camera_id, bool is_present)
+      { CameraDeviceStatusCb(camera_id, is_present); };
 
   camera_device_ = std::make_shared<Camera3DeviceClient>(camera_callbacks_);
   if (!camera_device_) {
@@ -1245,8 +1246,9 @@ status_t CameraContext::ConfigImageCapture(const uint32_t image_id,
     // Image color space hdrmode && data_space setting
     switch (param.colorimetry) {
       case Colorimetry::kBT601:
-        stream_param.hdrmode = 0;
-        stream_param.color_space = 0;
+        stream_param.hdrmode =
+            ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_STANDARD;
+        stream_param.color_space = -1;
         break;
       case Colorimetry::kBT2100HLGFULL:
         stream_param.hdrmode =
@@ -2155,16 +2157,8 @@ status_t CameraContext::ReturnImageCaptureBuffer(const uint32_t camera_id,
   StreamBuffer buffer = snapshot_buffer_list_.find(buffer_id)->second;
   assert(buffer.fd == buffer_id);
 
-
-  if (snapshot_buffer_stream_list_.find(buffer_id) ==
-      snapshot_buffer_stream_list_.end()) {
-    QMMF_ERROR("%s: buffer_id(%u) is not valid!!", __func__, buffer_id);
-    return -EINVAL;
-  }
-  int32_t stream_id = snapshot_buffer_stream_list_.find(buffer_id)->second;
-
   QMMF_DEBUG("%s: stream_id(%d):stream_buffer(0x%p):ion_fd(%d)"
-      " returned back!",  __func__, stream_id, buffer.handle, buffer_id);
+      " returned back!",  __func__, buffer.stream_id, buffer.handle, buffer_id);
 
   status_t ret = 0;
   ret = camera_device_->ReturnStreamBuffer(buffer);
@@ -2173,7 +2167,6 @@ status_t CameraContext::ReturnImageCaptureBuffer(const uint32_t camera_id,
   assert(ret == 0);
 
   snapshot_buffer_list_.erase(buffer_id);
-  snapshot_buffer_stream_list_.erase(buffer_id);
   snapshot_buffer_lock_.unlock();
 
   QMMF_DEBUG("%s: Exit", __func__);
@@ -3242,7 +3235,6 @@ void CameraContext::SnapshotCaptureCallback(StreamBuffer &buffer) {
 
   snapshot_buffer_lock_.lock();
   snapshot_buffer_list_.insert(std::make_pair(buffer.fd, buffer));
-  snapshot_buffer_stream_list_.insert(std::make_pair(buffer.fd, buffer.stream_id));
   snapshot_buffer_lock_.unlock();
 
   assert(client_snapshot_cb_ != nullptr);
@@ -3752,6 +3744,14 @@ std::shared_ptr<CameraPort> CameraContext::GetPort(const uint32_t& track_id) {
   return port;
 }
 
+void CameraContext::CameraDeviceStatusCb(int camera_id, bool is_present) {
+  QMMF_INFO("%s: Camera: %d, Status: %s", __func__, camera_id,
+      is_present ? "Present" : "Not Present");
+  if (device_status_cb_) {
+    device_status_cb_(camera_id, is_present);
+  }
+}
+
 void CameraContext::OnFrameAvailable(StreamBuffer& buffer) {
 
   QMMF_DEBUG("%s: StreamBuffer(0x%p) fd: %d stream_id: %d ts: %ld",
@@ -3975,7 +3975,8 @@ status_t CameraPort::Init() {
 
 #if defined(CAMX_ANDROID_API) && (CAMX_ANDROID_API >= 31)
   if (params_.colorimetry == Colorimetry::kBT601) {
-    cam_stream_params_.hdrmode = 0;
+    cam_stream_params_.hdrmode =
+        ANDROID_REQUEST_AVAILABLE_DYNAMIC_RANGE_PROFILES_MAP_STANDARD;
     cam_stream_params_.data_space = HAL_DATASPACE_UNKNOWN;
   } else {
     switch (params_.colorimetry) {
