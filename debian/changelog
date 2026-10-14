@@ -1,9 +1,9 @@
-qti-camera-service (1.0.6-0qcom1) UNRELEASED; urgency=medium
+qti-camera-service (1.0.6-0qcom1) resolute; urgency=medium
 
   [ Bala Sai Kosuri ]
   * New upstream release.
 
- -- Bala Sai Kosuri <bkosuri@qti.qualcomm.com>  Wed, 14 Oct 2026 20:42:40 +0530
+ -- GitHub Service Bot <githubservice@qti.qualcomm.com>  Wed, 14 Oct 2026 16:30:30 +0000
 
 qti-camera-service (1.0.5-0qcom1) resolute; urgency=medium
 
