@@ -5,7 +5,7 @@ Build-Depends:
  debhelper-compat (= 13),
 Build-Depends-Arch:
  cmake,
- libcamx-dev,
+ libcamx-dev (>= 1.1.1),
  libglib2.0-dev,
  libprotobuf-dev,
  protobuf-compiler,
