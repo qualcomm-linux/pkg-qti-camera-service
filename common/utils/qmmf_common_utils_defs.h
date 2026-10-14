@@ -51,7 +51,14 @@ namespace qmmf {
 const int64_t kWaitDelay = 2000000000;  // 2 sec
 const uint32_t kMaxSocketBufSize = 300000;
 
+#ifdef HAVE_ANDROID_UTILS
+inline const char* kCameraMetaDataLibName = "libcamera_metadata";
+inline const char* kCameraMetaDataLibVersion = "0";
+#else
 inline const char* kCameraMetaDataLibName = "libcamx_metadata";
+inline const char* kCameraMetaDataLibVersion = "1";
+#endif
+
 
 #define FORCE_SENSOR_MODE_MASK (0x00F00000)
 #define FORCE_SENSOR_MODE_DATA(idx) ((idx + 1) << 20)
@@ -108,7 +115,10 @@ enum class SocId {
   kHAMOA = 709,
   kHAMOA_10CORE = 710,
   kPURWA = 711,
-  kGLYMUR_KALAMBO = 719
+  kGLYMUR_KALAMBO = 719,
+  kSHIKRA_CQM = 756,
+  kSHIKRA_CQS = 758,
+  kSHIKRA_IQS = 759
 };
 
 struct StreamBuffer {
@@ -225,9 +235,9 @@ struct CameraStreamParameters {
         height(0),
         format(-1),
         data_space(0x0),
-        color_space(0),
+        color_space(-1),
         usecase(0),
-        hdrmode(0),
+        hdrmode(0x01),
         rotation(0),
         allocFlags(),
         bufferCount(0),
@@ -306,6 +316,8 @@ typedef std::function<void(const CaptureResult &result)> ResultCallback;
 // Notifies about all sorts of system messages that can happen during camera
 // operation
 typedef std::function<void(uint32_t errorCode)> SystemCallback;
+// Notifies about camera device status changes (present/not present)
+typedef std::function<void(int camera_id, bool is_present)> DeviceStatusCallback;
 
 // Please note that these callbacks shouldn't get blocked for long durations.
 // Also very important is to not to try and call "Camera3DeviceClient" API
@@ -318,6 +330,7 @@ typedef struct {
   PreparedCallback peparedCb;
   ResultCallback resultCb;
   SystemCallback systemCb;
+  DeviceStatusCallback deviceStatusCb;
 } CameraClientCallbacks;
 
 // Please note that this callbacks need to return as fast as possible
@@ -466,6 +479,12 @@ class Target {
       case SocId::kGLYMUR_MAHUA:
       case SocId::kGLYMUR_KALAMBO:
         return "glymur";
+
+      case SocId::kSHIKRA_CQM:
+      case SocId::kSHIKRA_CQS:
+      case SocId::kSHIKRA_IQS:
+        return "shikra";
+
       default:
         return {};
     }
