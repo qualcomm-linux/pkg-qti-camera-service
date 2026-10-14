@@ -3,7 +3,10 @@ qti-camera-service (1.0.6-0qli1~) UNRELEASED; urgency=medium
   [ GitHub Service Bot ]
   * New upstream release
 
- -- GitHub Service Bot <githubservice@qti.qualcomm.com>  Fri, 11 Sep 2026 06:07:12 +0000
+  [ Agathe Porte ]
+  * d/control: now depends on libcamx-dev >= 1.1.1
+
+ -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 14 Oct 2026 16:31:06 +0200
 
 qti-camera-service (1.0.5-0qli1) forky; urgency=medium
 
