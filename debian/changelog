@@ -1,3 +1,9 @@
+qti-camera-service (1.0.7-0qli1~) UNRELEASED; urgency=medium
+
+  * New upstream release
+
+ -- GitHub Service Bot <githubservice@qti.qualcomm.com>  Wed, 04 Nov 2026 05:29:56 +0000
+
 qti-camera-service (1.0.6-0qli1) unstable; urgency=medium
 
   [ GitHub Service Bot ]
