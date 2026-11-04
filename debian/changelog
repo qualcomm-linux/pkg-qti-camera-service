@@ -1,8 +1,9 @@
-qti-camera-service (1.0.6-0qcom2~) UNRELEASED; urgency=medium
+qti-camera-service (1.0.7-0qcom1) UNRELEASED; urgency=medium
 
-  * WIP — update changelog before next release
+  [ Bala Sai Kosuri ]
+  * New upstream release.
 
- -- Agathe Porte <agathe.porte@oss.qualcomm.com>  Wed, 14 Oct 2026 16:38:59 +0000
+ -- Bala Sai Kosuri <bkosuri@qti.qualcomm.com>  Wed, 04 Nov 2026 11:42:27 +0530
 
 qti-camera-service (1.0.6-0qcom1) resolute; urgency=medium
 
